@@ -197,6 +197,7 @@ const tasks = [
   function deleteTaskFromHtml(confirmed, el) {
     if (!confirmed) return;
     el.remove();
+    onNullTasks(listContainer);
   }
 
   function onDeleteHandler({ target }) {
@@ -226,4 +227,11 @@ const tasks = [
       document.documentElement.style.setProperty(key, value);
     });
   }
+  function onNullTasks(conteiner) {
+    if (conteiner.children.length === 0) {
+      const msg = 'Not aviable tasks';
+      document.querySelector('.container').insertAdjacentText('beforeend', msg);
+    }
+  }
+
 })(tasks);
