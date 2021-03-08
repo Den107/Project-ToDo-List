@@ -117,6 +117,7 @@ const tasks = [
   renderAllTasks(objOfTasks);
   form.addEventListener('submit', onFormSubmitHandler);
   listContainer.addEventListener('click', onDeleteHandler);
+  listContainer.addEventListener('click', onCompleteHandler);
   themeSelect.addEventListener('change', onThemeSelectHandler);
 
   function renderAllTasks(tasksList) {
@@ -146,6 +147,10 @@ const tasks = [
     deleteBtn.textContent = 'Delete task';
     deleteBtn.classList.add('btn', 'btn-danger', 'ml-auto', 'delete-btn');
 
+    const completeBtn = document.createElement('button');
+    completeBtn.textContent = 'Done task';
+    completeBtn.classList.add('btn', 'btn-success', 'ml-auto', 'success-btn');
+
     const article = document.createElement('p');
     article.textContent = body;
     article.classList.add('mt-2', 'w-100');
@@ -153,6 +158,7 @@ const tasks = [
     li.appendChild(span);
     li.appendChild(deleteBtn);
     li.appendChild(article);
+    li.appendChild(completeBtn);
 
     return li;
   }
@@ -194,10 +200,23 @@ const tasks = [
     return isConfirm;
   }
 
+  function completeTask(id) {
+    const { title } = objOfTasks[id];
+    const isConfirm = confirm(`Вы точно выполнили задачу ${title}?`);
+    if (!isConfirm) return isConfirm;
+    objOfTasks[id].completed = true;
+    return isConfirm;
+  }
+
   function deleteTaskFromHtml(confirmed, el) {
     if (!confirmed) return;
     el.remove();
     onNullTasks(listContainer);
+  }
+
+  function completedTaskFromHTML(confirmed, el) {
+    if (!confirmed) return;
+    el.style.background = 'springgreen';
   }
 
   function onDeleteHandler({ target }) {
@@ -206,6 +225,14 @@ const tasks = [
       const id = parent.dataset.taskId;
       const confirmed = deleteTask(id);
       deleteTaskFromHtml(confirmed, parent);
+    }
+  }
+  function onCompleteHandler({ target }) {
+    if (target.classList.contains('success-btn')) {
+      const parent = target.closest('[data-task-id]');
+      const id = parent.dataset.taskId;
+      const confirmed = completeTask(id);
+      completedTaskFromHTML(confirmed, parent);
     }
   }
 
